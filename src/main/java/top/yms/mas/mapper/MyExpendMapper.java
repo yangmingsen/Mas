@@ -7,6 +7,7 @@ import top.yms.mas.entity.MyExpendExample;
 
 import java.util.List;
 
+@Mapper
 public interface MyExpendMapper {
     @SelectProvider(type=MyExpendSqlProvider.class, method="countByExample")
     int countByExample(MyExpendExample example);

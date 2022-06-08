@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /mas
+
+spring:
+  application:
+    name: mas
+
+  datasource:
+    username: root
+    password: ymsyms
+    url: jdbc:mysql://localhost:3306/yms?serverTimezone=GMT%2B8
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 1
+    maxActive: 50
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+logging:
+  path:
+  file: mas-log.log
+  level:
+    top:
+      yms:
+        server: debug
+
+
+debug: false
+
