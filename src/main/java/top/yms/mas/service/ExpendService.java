@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.yms.mas.entity.MyExpend;
 import top.yms.mas.entity.MyExpendExample;
+import top.yms.mas.entity.odo.LineExpendDO;
 import top.yms.mas.mapper.MyExpendMapper;
 
 import java.util.List;
@@ -29,6 +30,10 @@ public class ExpendService {
         PageInfo<MyExpend> res = new PageInfo<>(list);
 
         return res;
+    }
+
+    public List<LineExpendDO> getMonthExpend(String year, String month) {
+        return expendMapper.getMonthExpend(year, month);
     }
 
 }

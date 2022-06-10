@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import top.yms.mas.entity.MyExpend;
 import top.yms.mas.entity.MyExpendExample;
+import top.yms.mas.entity.odo.LineExpendDO;
 
 import java.util.List;
 
@@ -80,4 +81,26 @@ public interface MyExpendMapper {
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(MyExpend record);
+
+    @Select({
+            "SELECT\n" +
+                    "\tSUBSTR(days, 9,9) as day, sum(money)\n as total " +
+                    "FROM\n" +
+                    "\t(\n" +
+                    "\tSELECT NAME,\n" +
+                    "\t\tmoney,\n" +
+                    "\t\tDATE_FORMAT( pay_time, \"%Y-%m-%d\" ) days \n" +
+                    "\tFROM\n" +
+                    "\t\t`my_expend` \n" +
+                    "\tWHERE\n" +
+                    "\t\tYEAR ( pay_time ) = #{year,jdbcType=VARCHAR} \n" +
+                    "\t\tAND MONTH ( pay_time ) = #{month,jdbcType=VARCHAR}  \n" +
+                    "\t) t1  GROUP BY t1.days ORDER BY days asc;"
+    })
+    @Results({
+            @Result(column="day", property="date", jdbcType=JdbcType.VARCHAR),
+            @Result(column="total", property="total", jdbcType=JdbcType.DECIMAL),
+    })
+    List<LineExpendDO> getMonthExpend(@Param("year") String year, @Param("month") String month);
+
 }

@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yms.mas.entity.MyExpend;
 import top.yms.mas.entity.MyExpendExample;
+import top.yms.mas.entity.odo.LineExpendDO;
 import top.yms.mas.service.ExpendService;
+
+import java.util.List;
 
 
 @Api(value = "Expend", tags = {"Expend"})
@@ -30,6 +33,16 @@ public class ExpendController {
         criteria.andIdGreaterThan(3000l);
 
         return expendService.list(mee, pn, ps);
+    }
+
+    @ApiOperation(value = "获取月统计数据")
+    @RequestMapping("/getMonthExpend")
+    public List<LineExpendDO> getMonthExpend(String year, String month) {
+
+        List<LineExpendDO> res =  expendService.getMonthExpend(year, month);
+
+        return res;
+
     }
 
 }
