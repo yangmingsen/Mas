@@ -1,14 +1,24 @@
 package top.yms.mas.mapper;
 
-import top.yms.mas.entity.MyExpend;
-import top.yms.mas.entity.MyExpendExample;
-import top.yms.mas.entity.MyExpendExample.Criteria;
-import top.yms.mas.entity.MyExpendExample.Criterion;
+import static org.apache.ibatis.jdbc.SqlBuilder.BEGIN;
+import static org.apache.ibatis.jdbc.SqlBuilder.DELETE_FROM;
+import static org.apache.ibatis.jdbc.SqlBuilder.FROM;
+import static org.apache.ibatis.jdbc.SqlBuilder.INSERT_INTO;
+import static org.apache.ibatis.jdbc.SqlBuilder.ORDER_BY;
+import static org.apache.ibatis.jdbc.SqlBuilder.SELECT;
+import static org.apache.ibatis.jdbc.SqlBuilder.SELECT_DISTINCT;
+import static org.apache.ibatis.jdbc.SqlBuilder.SET;
+import static org.apache.ibatis.jdbc.SqlBuilder.SQL;
+import static org.apache.ibatis.jdbc.SqlBuilder.UPDATE;
+import static org.apache.ibatis.jdbc.SqlBuilder.VALUES;
+import static org.apache.ibatis.jdbc.SqlBuilder.WHERE;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.ibatis.jdbc.SqlBuilder.*;
+import top.yms.mas.entity.MyExpend;
+import top.yms.mas.entity.MyExpendExample.Criteria;
+import top.yms.mas.entity.MyExpendExample.Criterion;
+import top.yms.mas.entity.MyExpendExample;
 
 public class MyExpendSqlProvider {
 
@@ -55,6 +65,18 @@ public class MyExpendSqlProvider {
             VALUES("pay_time", "#{payTime,jdbcType=TIMESTAMP}");
         }
         
+        if (record.getCategory() != null) {
+            VALUES("category", "#{category,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getCounterparty() != null) {
+            VALUES("counterparty", "#{counterparty,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getOrderId() != null) {
+            VALUES("order_id", "#{orderId,jdbcType=VARCHAR}");
+        }
+        
         return SQL();
     }
 
@@ -70,6 +92,9 @@ public class MyExpendSqlProvider {
         SELECT("pay_type");
         SELECT("remarks");
         SELECT("pay_time");
+        SELECT("category");
+        SELECT("counterparty");
+        SELECT("order_id");
         FROM("my_expend");
         applyWhere(example, false);
         
@@ -111,6 +136,18 @@ public class MyExpendSqlProvider {
             SET("pay_time = #{record.payTime,jdbcType=TIMESTAMP}");
         }
         
+        if (record.getCategory() != null) {
+            SET("category = #{record.category,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getCounterparty() != null) {
+            SET("counterparty = #{record.counterparty,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getOrderId() != null) {
+            SET("order_id = #{record.orderId,jdbcType=VARCHAR}");
+        }
+        
         applyWhere(example, true);
         return SQL();
     }
@@ -125,6 +162,9 @@ public class MyExpendSqlProvider {
         SET("pay_type = #{record.payType,jdbcType=VARCHAR}");
         SET("remarks = #{record.remarks,jdbcType=VARCHAR}");
         SET("pay_time = #{record.payTime,jdbcType=TIMESTAMP}");
+        SET("category = #{record.category,jdbcType=VARCHAR}");
+        SET("counterparty = #{record.counterparty,jdbcType=VARCHAR}");
+        SET("order_id = #{record.orderId,jdbcType=VARCHAR}");
         
         MyExpendExample example = (MyExpendExample) parameter.get("example");
         applyWhere(example, true);
@@ -153,6 +193,18 @@ public class MyExpendSqlProvider {
         
         if (record.getPayTime() != null) {
             SET("pay_time = #{payTime,jdbcType=TIMESTAMP}");
+        }
+        
+        if (record.getCategory() != null) {
+            SET("category = #{category,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getCounterparty() != null) {
+            SET("counterparty = #{counterparty,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getOrderId() != null) {
+            SET("order_id = #{orderId,jdbcType=VARCHAR}");
         }
         
         WHERE("id = #{id,jdbcType=BIGINT}");

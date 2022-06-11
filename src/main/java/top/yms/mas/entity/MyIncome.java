@@ -16,6 +16,12 @@ public class MyIncome {
 
     private Date payTime;
 
+    private String category;
+
+    private String counterparty;
+
+    private String orderId;
+
     public Long getId() {
         return id;
     }
@@ -62,5 +68,29 @@ public class MyIncome {
 
     public void setPayTime(Date payTime) {
         this.payTime = payTime;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category == null ? null : category.trim();
+    }
+
+    public String getCounterparty() {
+        return counterparty;
+    }
+
+    public void setCounterparty(String counterparty) {
+        this.counterparty = counterparty == null ? null : counterparty.trim();
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId == null ? null : orderId.trim();
     }
 }

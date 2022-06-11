@@ -1,11 +1,20 @@
 package top.yms.mas.mapper;
 
-import org.apache.ibatis.annotations.*;
+import java.util.List;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.apache.ibatis.type.JdbcType;
 import top.yms.mas.entity.MyIncome;
 import top.yms.mas.entity.MyIncomeExample;
-
-import java.util.List;
 
 public interface MyIncomeMapper {
     @SelectProvider(type=MyIncomeSqlProvider.class, method="countByExample")
@@ -23,10 +32,14 @@ public interface MyIncomeMapper {
     @Insert({
         "insert into my_income (id, name, ",
         "money, pay_type, ",
-        "remarks, pay_time)",
+        "remarks, pay_time, ",
+        "category, counterparty, ",
+        "order_id)",
         "values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, ",
         "#{money,jdbcType=DECIMAL}, #{payType,jdbcType=VARCHAR}, ",
-        "#{remarks,jdbcType=VARCHAR}, #{payTime,jdbcType=TIMESTAMP})"
+        "#{remarks,jdbcType=VARCHAR}, #{payTime,jdbcType=TIMESTAMP}, ",
+        "#{category,jdbcType=VARCHAR}, #{counterparty,jdbcType=VARCHAR}, ",
+        "#{orderId,jdbcType=VARCHAR})"
     })
     int insert(MyIncome record);
 
@@ -40,13 +53,16 @@ public interface MyIncomeMapper {
         @Result(column="money", property="money", jdbcType=JdbcType.DECIMAL),
         @Result(column="pay_type", property="payType", jdbcType=JdbcType.VARCHAR),
         @Result(column="remarks", property="remarks", jdbcType=JdbcType.VARCHAR),
-        @Result(column="pay_time", property="payTime", jdbcType=JdbcType.TIMESTAMP)
+        @Result(column="pay_time", property="payTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="category", property="category", jdbcType=JdbcType.VARCHAR),
+        @Result(column="counterparty", property="counterparty", jdbcType=JdbcType.VARCHAR),
+        @Result(column="order_id", property="orderId", jdbcType=JdbcType.VARCHAR)
     })
     List<MyIncome> selectByExample(MyIncomeExample example);
 
     @Select({
         "select",
-        "id, name, money, pay_type, remarks, pay_time",
+        "id, name, money, pay_type, remarks, pay_time, category, counterparty, order_id",
         "from my_income",
         "where id = #{id,jdbcType=BIGINT}"
     })
@@ -56,7 +72,10 @@ public interface MyIncomeMapper {
         @Result(column="money", property="money", jdbcType=JdbcType.DECIMAL),
         @Result(column="pay_type", property="payType", jdbcType=JdbcType.VARCHAR),
         @Result(column="remarks", property="remarks", jdbcType=JdbcType.VARCHAR),
-        @Result(column="pay_time", property="payTime", jdbcType=JdbcType.TIMESTAMP)
+        @Result(column="pay_time", property="payTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="category", property="category", jdbcType=JdbcType.VARCHAR),
+        @Result(column="counterparty", property="counterparty", jdbcType=JdbcType.VARCHAR),
+        @Result(column="order_id", property="orderId", jdbcType=JdbcType.VARCHAR)
     })
     MyIncome selectByPrimaryKey(Long id);
 
@@ -75,7 +94,10 @@ public interface MyIncomeMapper {
           "money = #{money,jdbcType=DECIMAL},",
           "pay_type = #{payType,jdbcType=VARCHAR},",
           "remarks = #{remarks,jdbcType=VARCHAR},",
-          "pay_time = #{payTime,jdbcType=TIMESTAMP}",
+          "pay_time = #{payTime,jdbcType=TIMESTAMP},",
+          "category = #{category,jdbcType=VARCHAR},",
+          "counterparty = #{counterparty,jdbcType=VARCHAR},",
+          "order_id = #{orderId,jdbcType=VARCHAR}",
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(MyIncome record);

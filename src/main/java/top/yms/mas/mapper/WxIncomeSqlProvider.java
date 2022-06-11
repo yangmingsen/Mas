@@ -1,76 +1,81 @@
 package top.yms.mas.mapper;
 
-import static org.apache.ibatis.jdbc.SqlBuilder.BEGIN;
-import static org.apache.ibatis.jdbc.SqlBuilder.DELETE_FROM;
-import static org.apache.ibatis.jdbc.SqlBuilder.FROM;
-import static org.apache.ibatis.jdbc.SqlBuilder.INSERT_INTO;
-import static org.apache.ibatis.jdbc.SqlBuilder.ORDER_BY;
-import static org.apache.ibatis.jdbc.SqlBuilder.SELECT;
-import static org.apache.ibatis.jdbc.SqlBuilder.SELECT_DISTINCT;
-import static org.apache.ibatis.jdbc.SqlBuilder.SET;
-import static org.apache.ibatis.jdbc.SqlBuilder.SQL;
-import static org.apache.ibatis.jdbc.SqlBuilder.UPDATE;
-import static org.apache.ibatis.jdbc.SqlBuilder.VALUES;
-import static org.apache.ibatis.jdbc.SqlBuilder.WHERE;
+import top.yms.mas.entity.WxIncome;
+import top.yms.mas.entity.WxIncomeExample;
+import top.yms.mas.entity.WxIncomeExample.Criteria;
+import top.yms.mas.entity.WxIncomeExample.Criterion;
 
 import java.util.List;
 import java.util.Map;
-import top.yms.mas.entity.MyTagRecord;
-import top.yms.mas.entity.MyTagRecordExample.Criteria;
-import top.yms.mas.entity.MyTagRecordExample.Criterion;
-import top.yms.mas.entity.MyTagRecordExample;
 
-public class MyTagRecordSqlProvider {
+import static org.apache.ibatis.jdbc.SqlBuilder.*;
 
-    public String countByExample(MyTagRecordExample example) {
+public class WxIncomeSqlProvider {
+
+    public String countByExample(WxIncomeExample example) {
         BEGIN();
         SELECT("count(*)");
-        FROM("my_tag_record");
+        FROM("wx_income");
         applyWhere(example, false);
         return SQL();
     }
 
-    public String deleteByExample(MyTagRecordExample example) {
+    public String deleteByExample(WxIncomeExample example) {
         BEGIN();
-        DELETE_FROM("my_tag_record");
+        DELETE_FROM("wx_income");
         applyWhere(example, false);
         return SQL();
     }
 
-    public String insertSelective(MyTagRecord record) {
+    public String insertSelective(WxIncome record) {
         BEGIN();
-        INSERT_INTO("my_tag_record");
+        INSERT_INTO("wx_income");
         
         if (record.getId() != null) {
-            VALUES("id", "#{id,jdbcType=BIGINT}");
+            VALUES("id", "#{id,jdbcType=VARCHAR}");
         }
         
-        if (record.getTagId() != null) {
-            VALUES("tag_id", "#{tagId,jdbcType=INTEGER}");
+        if (record.getCounterparty() != null) {
+            VALUES("counterparty", "#{counterparty,jdbcType=VARCHAR}");
         }
         
-        if (record.getRecordId() != null) {
-            VALUES("record_id", "#{recordId,jdbcType=BIGINT}");
+        if (record.getTitle() != null) {
+            VALUES("title", "#{title,jdbcType=VARCHAR}");
         }
         
-        if (record.getRecordType() != null) {
-            VALUES("record_type", "#{recordType,jdbcType=VARCHAR}");
+        if (record.getPaymentMethod() != null) {
+            VALUES("payment_method", "#{paymentMethod,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getAmount() != null) {
+            VALUES("amount", "#{amount,jdbcType=DECIMAL}");
+        }
+        
+        if (record.getCategory() != null) {
+            VALUES("category", "#{category,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTxTime() != null) {
+            VALUES("tx_time", "#{txTime,jdbcType=TIMESTAMP}");
         }
         
         return SQL();
     }
 
-    public String selectByExample(MyTagRecordExample example) {
+    public String selectByExample(WxIncomeExample example) {
         BEGIN();
         if (example != null && example.isDistinct()) {
             SELECT_DISTINCT("id");
         } else {
             SELECT("id");
         }
-        SELECT("tag_id");
-        SELECT("record_id");
-        SELECT("record_type");
-        FROM("my_tag_record");
+        SELECT("counterparty");
+        SELECT("title");
+        SELECT("payment_method");
+        SELECT("amount");
+        SELECT("category");
+        SELECT("tx_time");
+        FROM("wx_income");
         applyWhere(example, false);
         
         if (example != null && example.getOrderByClause() != null) {
@@ -81,26 +86,38 @@ public class MyTagRecordSqlProvider {
     }
 
     public String updateByExampleSelective(Map<String, Object> parameter) {
-        MyTagRecord record = (MyTagRecord) parameter.get("record");
-        MyTagRecordExample example = (MyTagRecordExample) parameter.get("example");
+        WxIncome record = (WxIncome) parameter.get("record");
+        WxIncomeExample example = (WxIncomeExample) parameter.get("example");
         
         BEGIN();
-        UPDATE("my_tag_record");
+        UPDATE("wx_income");
         
         if (record.getId() != null) {
-            SET("id = #{record.id,jdbcType=BIGINT}");
+            SET("id = #{record.id,jdbcType=VARCHAR}");
         }
         
-        if (record.getTagId() != null) {
-            SET("tag_id = #{record.tagId,jdbcType=INTEGER}");
+        if (record.getCounterparty() != null) {
+            SET("counterparty = #{record.counterparty,jdbcType=VARCHAR}");
         }
         
-        if (record.getRecordId() != null) {
-            SET("record_id = #{record.recordId,jdbcType=BIGINT}");
+        if (record.getTitle() != null) {
+            SET("title = #{record.title,jdbcType=VARCHAR}");
         }
         
-        if (record.getRecordType() != null) {
-            SET("record_type = #{record.recordType,jdbcType=VARCHAR}");
+        if (record.getPaymentMethod() != null) {
+            SET("payment_method = #{record.paymentMethod,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getAmount() != null) {
+            SET("amount = #{record.amount,jdbcType=DECIMAL}");
+        }
+        
+        if (record.getCategory() != null) {
+            SET("category = #{record.category,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTxTime() != null) {
+            SET("tx_time = #{record.txTime,jdbcType=TIMESTAMP}");
         }
         
         applyWhere(example, true);
@@ -109,40 +126,55 @@ public class MyTagRecordSqlProvider {
 
     public String updateByExample(Map<String, Object> parameter) {
         BEGIN();
-        UPDATE("my_tag_record");
+        UPDATE("wx_income");
         
-        SET("id = #{record.id,jdbcType=BIGINT}");
-        SET("tag_id = #{record.tagId,jdbcType=INTEGER}");
-        SET("record_id = #{record.recordId,jdbcType=BIGINT}");
-        SET("record_type = #{record.recordType,jdbcType=VARCHAR}");
+        SET("id = #{record.id,jdbcType=VARCHAR}");
+        SET("counterparty = #{record.counterparty,jdbcType=VARCHAR}");
+        SET("title = #{record.title,jdbcType=VARCHAR}");
+        SET("payment_method = #{record.paymentMethod,jdbcType=VARCHAR}");
+        SET("amount = #{record.amount,jdbcType=DECIMAL}");
+        SET("category = #{record.category,jdbcType=VARCHAR}");
+        SET("tx_time = #{record.txTime,jdbcType=TIMESTAMP}");
         
-        MyTagRecordExample example = (MyTagRecordExample) parameter.get("example");
+        WxIncomeExample example = (WxIncomeExample) parameter.get("example");
         applyWhere(example, true);
         return SQL();
     }
 
-    public String updateByPrimaryKeySelective(MyTagRecord record) {
+    public String updateByPrimaryKeySelective(WxIncome record) {
         BEGIN();
-        UPDATE("my_tag_record");
+        UPDATE("wx_income");
         
-        if (record.getTagId() != null) {
-            SET("tag_id = #{tagId,jdbcType=INTEGER}");
+        if (record.getCounterparty() != null) {
+            SET("counterparty = #{counterparty,jdbcType=VARCHAR}");
         }
         
-        if (record.getRecordId() != null) {
-            SET("record_id = #{recordId,jdbcType=BIGINT}");
+        if (record.getTitle() != null) {
+            SET("title = #{title,jdbcType=VARCHAR}");
         }
         
-        if (record.getRecordType() != null) {
-            SET("record_type = #{recordType,jdbcType=VARCHAR}");
+        if (record.getPaymentMethod() != null) {
+            SET("payment_method = #{paymentMethod,jdbcType=VARCHAR}");
         }
         
-        WHERE("id = #{id,jdbcType=BIGINT}");
+        if (record.getAmount() != null) {
+            SET("amount = #{amount,jdbcType=DECIMAL}");
+        }
+        
+        if (record.getCategory() != null) {
+            SET("category = #{category,jdbcType=VARCHAR}");
+        }
+        
+        if (record.getTxTime() != null) {
+            SET("tx_time = #{txTime,jdbcType=TIMESTAMP}");
+        }
+        
+        WHERE("id = #{id,jdbcType=VARCHAR}");
         
         return SQL();
     }
 
-    protected void applyWhere(MyTagRecordExample example, boolean includeExamplePhrase) {
+    protected void applyWhere(WxIncomeExample example, boolean includeExamplePhrase) {
         if (example == null) {
             return;
         }

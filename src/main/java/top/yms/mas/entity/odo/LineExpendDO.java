@@ -7,6 +7,15 @@ public class LineExpendDO implements Serializable {
     private String date;
     private BigDecimal total;
 
+    public LineExpendDO() {
+
+    }
+
+    public LineExpendDO(String date, BigDecimal total) {
+        this.date = date;
+        this.total = total;
+    }
+
     public String getDate() {
         return date;
     }
