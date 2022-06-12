@@ -7,6 +7,7 @@ import top.yms.mas.entity.AliExpendExample;
 
 import java.util.List;
 
+@Mapper
 public interface AliExpendMapper {
     @SelectProvider(type=AliExpendSqlProvider.class, method="countByExample")
     int countByExample(AliExpendExample example);

@@ -7,6 +7,7 @@ import top.yms.mas.entity.WxIncomeExample;
 
 import java.util.List;
 
+@Mapper
 public interface WxIncomeMapper {
     @SelectProvider(type=WxIncomeSqlProvider.class, method="countByExample")
     int countByExample(WxIncomeExample example);

@@ -7,6 +7,7 @@ import top.yms.mas.entity.AliIncomeExample;
 
 import java.util.List;
 
+@Mapper
 public interface AliIncomeMapper {
     @SelectProvider(type=AliIncomeSqlProvider.class, method="countByExample")
     int countByExample(AliIncomeExample example);

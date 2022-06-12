@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,11 @@ public class FileController {
     @Autowired
     private RecordHandler aliRecordHandler;
 
+    @Autowired
+    private RecordHandler wxRecordHandler;
+
+
+    @Transactional
     @ApiOperation(value = "支付宝账单上传")
     @PostMapping("/ali")
     public RestOut uploadAli(@RequestParam(value = "file") MultipartFile file) {
@@ -28,10 +34,11 @@ public class FileController {
         return aliRecordHandler.doRecordHandler(file);
     }
 
+    @Transactional
     @ApiOperation(value = "微信账单上传")
     @PostMapping("/wx")
     public RestOut uploadWX(@RequestParam(value = "file") MultipartFile file) {
-
-        return RestOut.error("失败");
+        if (file == null) return RestOut.error("上传文件为空");
+        return wxRecordHandler.doRecordHandler(file);
     }
 }

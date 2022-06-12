@@ -39,8 +39,8 @@ logging:
   level:
     top:
       yms:
-        mas: debug
+        mas: info
 
 
-debug: true
+debug: false
 

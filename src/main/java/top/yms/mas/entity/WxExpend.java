@@ -73,4 +73,17 @@ public class WxExpend {
     public void setTxTime(Date txTime) {
         this.txTime = txTime;
     }
+
+    @Override
+    public String toString() {
+        return "WxExpend{" +
+                "id='" + id + '\'' +
+                ", counterparty='" + counterparty + '\'' +
+                ", title='" + title + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", amount=" + amount +
+                ", category='" + category + '\'' +
+                ", txTime=" + txTime +
+                '}';
+    }
 }

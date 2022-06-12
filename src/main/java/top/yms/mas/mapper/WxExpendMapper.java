@@ -7,6 +7,7 @@ import top.yms.mas.entity.WxExpendExample;
 
 import java.util.List;
 
+@Mapper
 public interface WxExpendMapper {
     @SelectProvider(type=WxExpendSqlProvider.class, method="countByExample")
     int countByExample(WxExpendExample example);

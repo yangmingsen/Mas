@@ -10,14 +10,13 @@ import top.yms.mas.utils.DateHelper;
 import top.yms.mas.utils.POIExcelUtil;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
 
 public abstract class AbstractRecordHandler implements RecordHandler{
 
-    protected  String DOT_SPLIT = "\\.";
+    protected static String DOT_SPLIT = "\\.";
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractRecordHandler.class);
 
@@ -31,7 +30,6 @@ public abstract class AbstractRecordHandler implements RecordHandler{
     public  String getCellStr(Cell cell) {
         return POIExcelUtil.getCellValueByCell(cell).trim();
     }
-
 
     public Date getDateTime(String dateStr) {
         return DateHelper.strToDateTime(dateStr);
@@ -49,7 +47,7 @@ public abstract class AbstractRecordHandler implements RecordHandler{
             return doParseRecord(workbook, fileName);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return RestOut.error(e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             try {
                 if (workbook != null) {
@@ -61,4 +59,12 @@ public abstract class AbstractRecordHandler implements RecordHandler{
             logger.info("解析["+fileName+"]结束...");
         }
     }
+
+    public String getSheetName(String fileName) {
+        String[] strs = fileName.split(DOT_SPLIT); // xx.xlsx => [0]:xx, [1]:xlsx
+        String sheetName = strs[0];
+
+        return sheetName;
+    }
+
 }

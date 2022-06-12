@@ -7,14 +7,21 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import top.yms.mas.entity.*;
+import top.yms.mas.mapper.AliExpendMapper;
+import top.yms.mas.mapper.AliExpendOtherMapper;
+import top.yms.mas.mapper.AliExpendTmpMapper;
+import top.yms.mas.mapper.AliIncomeMapper;
 import top.yms.mas.utils.POIExcelUtil;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 
 @Component
 public class AliRecordHandler extends AbstractRecordHandler{
@@ -31,6 +38,18 @@ public class AliRecordHandler extends AbstractRecordHandler{
     private static final String AUTO_RETURN = "自动还款";
     private static final String UNFREEZE_SUCCESS = "解冻成功";
     private static final String CREDIT_SERVICE_USE_SUCCESS = "信用服务使用成功";
+
+    @Autowired
+    private AliExpendMapper aliExpendMapper;
+
+    @Autowired
+    private AliExpendOtherMapper aliExpendOtherMapper;
+
+    @Autowired
+    private AliExpendTmpMapper aliExpendTmpMapper;
+
+    @Autowired
+    private AliIncomeMapper aliIncomeMapper;
 
 
     private AliExpend parseAliCells(Cell[] cells, AliExpend aliExpend) throws Exception {
@@ -75,7 +94,9 @@ public class AliRecordHandler extends AbstractRecordHandler{
     }
 
     public void toIncomeSuccess(Cell [] cells, Map<String, Object> map) throws Exception {
-        toExpendSuccess(cells, map);
+        AliIncome aliIncome = new AliIncome();
+        parseAliCells(cells, aliIncome);
+        map.put(aliIncome.getId(), aliIncome);
     }
 
     public  void toExpendSuccess(Cell[] cells, Map<String, Object> map) throws Exception {
@@ -89,26 +110,32 @@ public class AliRecordHandler extends AbstractRecordHandler{
     public void toTmpExpend(Cell[] cells, Map<String, Object> map) throws Exception {
         //0 => 收/支(支出,其他) , 1=> 交易对方, 2 => 对方账号, 3 => 商品说明, 4=> 收/付款方式,
         //5=> 金额, 6=> 交易状态, 7=> 交易分类, 8=> 订单号, 9=>商家订单号, 10=> 交易时间
-        AliExpendOther otherAliExpend = new AliExpendOther();
+        AliExpendTmp aliExpendTmp = new AliExpendTmp();
         //解析
-        parseAliCells(cells, otherAliExpend);
+        parseAliCells(cells, aliExpendTmp);
 
         //交易状态
-        otherAliExpend.setTxStatus(getCellStr(cells[6]));
+        aliExpendTmp.setTxStatus(getCellStr(cells[6]));
 
-        map.put(otherAliExpend.getId(), otherAliExpend);
+        map.put(aliExpendTmp.getId(), aliExpendTmp);
 
     }
 
     public void toOtherExpend(Cell[] cells, Map<String, Object> map) throws Exception {
-        toTmpExpend(cells, map);
+        AliExpendOther aliExpendOther = new AliExpendOther();
+
+        parseAliCells(cells, aliExpendOther);
+
+        //交易状态
+        aliExpendOther.setTxStatus(getCellStr(cells[6]));
+
+        map.put(aliExpendOther.getId(), aliExpendOther);
     }
 
 
     @Override
     public RestOut doParseRecord(Workbook workbook, String fileName) throws Exception{
-        String[] strs = fileName.split(DOT_SPLIT); // xx.xlsx => [0]:xx, [1]:xlsx
-        String sheetName = strs[0];
+        String sheetName = getSheetName(fileName);
         Sheet sheet = workbook.getSheet(sheetName);
         if (sheet == null) {
             String errInfo = sheetName + " 未找到!!!";
@@ -122,7 +149,7 @@ public class AliRecordHandler extends AbstractRecordHandler{
         Map<String, Object> tmpExpendMap = new HashMap<>(); //零时不重要的数据
 
         int totalRows = sheet.getPhysicalNumberOfRows();
-        logger.info("开始执行解析...总行数["+totalRows+"]");
+        logger.info("开始执行Ali解析...总行数["+totalRows+"]");
         // ali的从第3行开始
         for (int i = 2; i < totalRows; i++) {
             Row row = sheet.getRow(i);//拿到某一行
@@ -183,11 +210,63 @@ public class AliRecordHandler extends AbstractRecordHandler{
         logger.info("所有数据解析完毕...");
 
         //mapPrint(incomeMap);
+        logger.info("开始写入到Db");
+        writeExpend(expendMap);
+        writeIncome(incomeMap);
+        writeExpendTmp(tmpExpendMap);
+        writeExpendOther(otherExpendMap);
+        logger.info("写入到Db完毕....");
 
         //输出到Db
 
         return RestOut.success("Ok");
     }
+
+    private void writeExpendOther(Map<String, Object> otherExpendMap) {
+        for(Map.Entry<String, Object> map : otherExpendMap.entrySet()) {
+            String id = map.getKey();
+            AliExpendOther newValue = (AliExpendOther)map.getValue();
+            AliExpendOther oldValue = aliExpendOtherMapper.selectByPrimaryKey(id);
+            if (oldValue == null) {
+                aliExpendOtherMapper.insert((newValue));
+            }
+        }
+    }
+
+    private void writeExpendTmp(Map<String, Object> tmpExpendMap) {
+        for(Map.Entry<String, Object> map : tmpExpendMap.entrySet()) {
+            String id = map.getKey();
+            AliExpendTmp newValue = (AliExpendTmp)map.getValue();
+            AliExpendTmp oldValue = aliExpendTmpMapper.selectByPrimaryKey(id);
+            if (oldValue == null) {
+                aliExpendTmpMapper.insert((newValue));
+            }
+        }
+    }
+
+    private void writeIncome(Map<String, Object> incomeMap) {
+        for(Map.Entry<String, Object> map : incomeMap.entrySet()) {
+            String id = map.getKey();
+            AliIncome newValue = (AliIncome)map.getValue();
+            AliIncome oldValue = aliIncomeMapper.selectByPrimaryKey(id);
+            if (oldValue == null) {
+                aliIncomeMapper.insert((newValue));
+            }
+        }
+    }
+
+
+    public void writeExpend(Map<String, Object> expendMap) {
+        for(Map.Entry<String, Object> map : expendMap.entrySet()) {
+            String id = map.getKey();
+            AliExpend newValue = (AliExpend)map.getValue();
+            AliExpend oldValue = aliExpendMapper.selectByPrimaryKey(id);
+            if (oldValue == null) {
+                aliExpendMapper.insert((newValue));
+            }
+        }
+    }
+
 
 
 

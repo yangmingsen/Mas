@@ -8,13 +8,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import top.yms.mas.compont.TestConpont;
+import top.yms.mas.entity.AliExpend;
 import top.yms.mas.entity.MyExpend;
 import top.yms.mas.entity.MyExpendExample;
 import top.yms.mas.entity.RestOut;
 import top.yms.mas.entity.odo.LineExpendDO;
 import top.yms.mas.entity.odo.MonthExpendDO;
+import top.yms.mas.mapper.AliExpendMapper;
 import top.yms.mas.service.ExpendService;
 
 import java.util.List;
@@ -30,6 +34,23 @@ public class ExpendController {
     private ExpendService expendService;
 
     private static final Logger logger = LoggerFactory.getLogger(ExpendController.class);
+
+
+    @Autowired
+    private AliExpendMapper aliExpendMapper;
+
+    private int cnt =0;
+
+    @Autowired
+    private TestConpont testConpont;
+
+    @Transactional
+    @ApiOperation(value = "test")
+    @RequestMapping("/test")
+    public RestOut doTest(String id) {
+        testConpont.dotest(id);
+        return RestOut.success("ok");
+    }
 
     @ApiOperation(value = "listSearch")
     @RequestMapping("/list")
