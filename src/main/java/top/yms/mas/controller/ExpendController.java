@@ -44,7 +44,8 @@ public class ExpendController {
     @Autowired
     private TestConpont testConpont;
 
-    @Transactional
+
+   // @Transactional
     @ApiOperation(value = "test")
     @RequestMapping("/test")
     public RestOut doTest(String id) {

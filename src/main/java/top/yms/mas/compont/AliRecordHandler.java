@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import top.yms.mas.entity.*;
 import top.yms.mas.mapper.AliExpendMapper;
 import top.yms.mas.mapper.AliExpendOtherMapper;
@@ -132,6 +133,10 @@ public class AliRecordHandler extends AbstractRecordHandler{
         map.put(aliExpendOther.getId(), aliExpendOther);
     }
 
+    @Override
+    public RestOut doRecordHandler(MultipartFile file) {
+        return super.doRecordHandler(file);
+    }
 
     @Override
     public RestOut doParseRecord(Workbook workbook, String fileName) throws Exception{
