@@ -1,6 +1,7 @@
 package top.yms.mas.utils;
 
 
+import com.csvreader.CsvReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -80,6 +83,7 @@ public class POIExcelUtil {
 
     private static final String XLS = "xls";
     private static final String XLSX = "xlsx";
+    private static final String CSV = "csv";
 
     /**
      * 根据文件后缀名类型获取对应的工作簿对象
@@ -94,9 +98,45 @@ public class POIExcelUtil {
             workbook = new HSSFWorkbook(inputStream);
         } else if (fileName.endsWith(XLSX)) {
             workbook = new XSSFWorkbook(inputStream);
+        } else if(fileName.endsWith(CSV)) {
+            workbook = getWorkbookByCsv(inputStream);
         }
         return workbook;
     }
+
+
+    public static Workbook getWorkbookByCsv(InputStream is)  {
+        Workbook workbook;
+        try {
+            CsvReader reader = new CsvReader(is, ',', Charset.forName("GBK"));
+            ArrayList<String[]> dataList = new ArrayList<>();
+            while (reader.readRecord()) {
+                dataList.add(reader.getValues());
+            }
+
+            workbook = (XSSFWorkbook) Class.forName(XSSF).newInstance();
+            Sheet sheet = workbook.createSheet(Thread.currentThread().getName());//使用线程名字作为sheetName
+            for (int rowNum = 0; rowNum < dataList.size(); rowNum++) {
+                String[] data = dataList.get(rowNum);
+                Row row = sheet.createRow(rowNum);
+                for (int columnNum = 0; columnNum < data.length; columnNum++) {
+                    Cell cell = row.createCell(columnNum);
+                    cell.setCellValue(data[columnNum]);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                is.close();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return workbook;
+    }
+
 
     //获取单元格各类型值，返回字符串类型
     public static String getCellValueByCell(Cell cell) {

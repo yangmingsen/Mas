@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import top.yms.mas.compont.RecordHandler;
+import top.yms.mas.compont.RecordHandlerFacade;
 import top.yms.mas.entity.RestOut;
 
 @Api(value = "文件上传", tags = {"文件上传"})
@@ -19,10 +19,7 @@ import top.yms.mas.entity.RestOut;
 public class FileController {
 
     @Autowired
-    private RecordHandler aliRecordHandler;
-
-    @Autowired
-    private RecordHandler wxRecordHandler;
+    private RecordHandlerFacade recordHandlerFacade;
 
 
     @Transactional
@@ -30,7 +27,7 @@ public class FileController {
     @PostMapping("/ali")
     public RestOut uploadAli(@RequestParam(value = "file") MultipartFile file) {
         if (file == null) return RestOut.error("上传文件为空");
-        return aliRecordHandler.doRecordHandler(file);
+        return recordHandlerFacade.parseAliRecord(file);
     }
 
     @Transactional
@@ -38,6 +35,6 @@ public class FileController {
     @PostMapping("/wx")
     public RestOut uploadWX(@RequestParam(value = "file") MultipartFile file) {
         if (file == null) return RestOut.error("上传文件为空");
-        return wxRecordHandler.doRecordHandler(file);
+        return recordHandlerFacade.parseWxRecord(file);
     }
 }

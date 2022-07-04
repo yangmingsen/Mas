@@ -95,6 +95,27 @@ public interface MyExpendMapper {
     })
     int updateByPrimaryKey(MyExpend record);
 
+
+    @Select({
+            "select",
+            "id, name, money, pay_type, remarks, pay_time, category, counterparty, order_id",
+            "from my_expend",
+            "where order_id = #{orderId,jdbcType=VARCHAR}"
+    })
+    @Results({
+            @Result(column="id", property="id", jdbcType=JdbcType.BIGINT, id=true),
+            @Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
+            @Result(column="money", property="money", jdbcType=JdbcType.DECIMAL),
+            @Result(column="pay_type", property="payType", jdbcType=JdbcType.VARCHAR),
+            @Result(column="remarks", property="remarks", jdbcType=JdbcType.VARCHAR),
+            @Result(column="pay_time", property="payTime", jdbcType=JdbcType.TIMESTAMP),
+            @Result(column="category", property="category", jdbcType=JdbcType.VARCHAR),
+            @Result(column="counterparty", property="counterparty", jdbcType=JdbcType.VARCHAR),
+            @Result(column="order_id", property="orderId", jdbcType=JdbcType.VARCHAR)
+    })
+    MyExpend selectByOrderId(String orderId);
+
+
     @Select({
             "SELECT\n" +
                     "\tSUBSTR(days, 9,9) as day, sum(money)\n as total " +
@@ -115,4 +136,50 @@ public interface MyExpendMapper {
             @Result(column="total", property="total", jdbcType=JdbcType.DECIMAL),
     })
     List<LineExpendDO> getMonthExpend(@Param("year") String year, @Param("month") String month);
+
+
+    @Select({
+            "SELECT\n" +
+                    "\tdays,\n" +
+                    "\tsum( money ) AS total \n" +
+                    "FROM\n" +
+                    "\t(\n" +
+                    "\tSELECT\n" +
+                    "\t\tmoney,\n" +
+                    "\t\tDATE_FORMAT( pay_time, \"%Y-%m\" ) days \n" +
+                    "\tFROM\n" +
+                    "\t\t`my_expend` \n" +
+                    "\tWHERE\n" +
+                    "\t\tYEAR ( pay_time ) = #{year,jdbcType=VARCHAR}\n" +
+                    "\t\t \n" +
+                    "\t) t1 \n" +
+                    "GROUP BY\n" +
+                    "\tt1.days \n" +
+                    "ORDER BY\n" +
+                    "\tdays ASC"
+    })
+    @Results({
+            @Result(column="days", property="date", jdbcType=JdbcType.VARCHAR),
+            @Result(column="total", property="total", jdbcType=JdbcType.DECIMAL),
+    })
+    List<LineExpendDO> getYearExpend(@Param("year") String year);
+
+
+
+    @Select({
+            "SELECT\n" +
+                    "\tdays,\n" +
+                    "\tsum( money ) AS total \n" +
+                    "FROM\n" +
+                    "\t( SELECT money, DATE_FORMAT( pay_time, \"%Y\" ) days FROM `my_expend` ) t1 \n" +
+                    "GROUP BY\n" +
+                    "\tt1.days \n" +
+                    "ORDER BY\n" +
+                    "\tdays ASC "
+    })
+    @Results({
+            @Result(column="days", property="date", jdbcType=JdbcType.VARCHAR),
+            @Result(column="total", property="total", jdbcType=JdbcType.DECIMAL),
+    })
+    List<LineExpendDO> getAllExpend();
 }

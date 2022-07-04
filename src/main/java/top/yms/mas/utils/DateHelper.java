@@ -18,26 +18,43 @@ public class DateHelper {
     private final static int [] MONTH = {0,31,28,31,30,31,30,31,31,30,31,30,31};
 
 
+    private static final String PATTERN7 = "yyyy/MM/dd HH:mm";
+
+
     /**
+     * input=> 2022-05-31 23:18:00 => out => Date
+     * input=> 2022/5/28 17:20 => Out => date
+     * input=> 2022/5/31 8:18  => out => date
+     * input=>
+     * <p>
      * 将长时间格式字符串转换为时间 yyyy-MM-dd HH:mm:ss
      *
      * @param strDate
      * @return
      */
     public static Date strToDateTime(String strDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (strDate == null) return null;
+        Date date = null;
+        if (strDate.indexOf("/") > 0) {
+            date = doStrToDateTime(strDate, PATTERN7);
+        } else if (strDate.indexOf("-") > 0) {
+            date = doStrToDateTime(strDate, PATTERN4);
+        } else {
+            throw new RuntimeException("没有匹配的格式：" + strDate);
+        }
+
+        return date;
+    }
+
+    public static Date doStrToDateTime(String dateStr, String pattern) {
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         ParsePosition pos = new ParsePosition(0);
-        Date strtodate = formatter.parse(strDate, pos);
+        Date strtodate = formatter.parse(dateStr, pos);
         return strtodate;
     }
 
-    public static void main(String[] args) {
-        String str = "2018-04-02 00:00:00";
-        System.out.println(strToDateTime(str));
-    }
 
-
-    public static String getDateStr(Date date) {
+    public static String getDateTimeStr(Date date) {
         if (date == null) return " ";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN4);
         String timeStampStr = simpleDateFormat.format(date);
@@ -104,7 +121,7 @@ public class DateHelper {
     public static int getDays(int year, int month) {
         if (month <1 || month > 12) return -1;
 
-        if (year %4 == 0 || year%400 ==0) {
+        if (month == 2 && (year %4 == 0 || year%400 ==0)) {
             return 29;
         }
         return MONTH[month];

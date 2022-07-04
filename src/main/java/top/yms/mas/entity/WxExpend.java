@@ -18,6 +18,16 @@ public class WxExpend {
 
     private Date txTime;
 
+    private String isSync;
+
+    public String getIsSync() {
+        return isSync;
+    }
+
+    public void setIsSync(String isSync) {
+        this.isSync = isSync;
+    }
+
     public String getId() {
         return id;
     }

@@ -26,6 +26,7 @@ public class WxRecordHandler extends AbstractRecordHandler {
     private static final Logger logger = LoggerFactory.getLogger(WxRecordHandler.class);
     private static final String INCOME = "收入";
     private static final String EXPEND = "支出";
+    private static final String MONEY_FLAG = "¥";
 
     @Autowired
     private WxIncomeMapper wxIncomeMapper;
@@ -64,9 +65,12 @@ public class WxRecordHandler extends AbstractRecordHandler {
             throw new Exception("订单号[" + wxExpend.getId() + "] 金额为空");
         }
         try {
+            if (amountStr.indexOf(MONEY_FLAG) >= 0) {
+                amountStr = amountStr.replaceAll(MONEY_FLAG, "");
+            }
             new Double(amountStr);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("订单号[" + wxExpend.getId() + "] "+e.getMessage());
         }
         wxExpend.setAmount(new BigDecimal(amountStr));
 
@@ -139,12 +143,33 @@ public class WxRecordHandler extends AbstractRecordHandler {
         logger.info("所有数据解析完毕...");
 
         //mapPrint(expendMap);
-        writeIncome(incomeMap);
+       writeIncome(incomeMap);
         writeExpend(expendMap);
         writeExpendOther(otherMap);
 
 
         return RestOut.success("Ok");
+    }
+
+
+
+    private void writeToDb(Map<String, Object> maps) {
+        for(Map.Entry<String, Object> map : maps.entrySet()) {
+
+            String id = map.getKey();
+            Object newObjValue = map.getValue();
+            if (newObjValue instanceof WxIncome) {
+                WxIncome oldValue = wxIncomeMapper.selectByPrimaryKey(id);
+                if (oldValue == null) {
+                    wxIncomeMapper.insert((WxIncome)newObjValue);
+                }
+            } else if(newObjValue instanceof WxExpend) {
+
+            } else if(newObjValue instanceof WxExpendOther) {
+
+            }
+
+        }
     }
 
     private void writeIncome(Map<String, Object> maps) {

@@ -59,6 +59,10 @@ public class AliIncomeSqlProvider {
             VALUES("tx_time", "#{txTime,jdbcType=TIMESTAMP}");
         }
         
+        if (record.getIsSync() != null) {
+            VALUES("is_sync", "#{isSync,jdbcType=VARCHAR}");
+        }
+        
         return SQL();
     }
 
@@ -75,6 +79,7 @@ public class AliIncomeSqlProvider {
         SELECT("amount");
         SELECT("category");
         SELECT("tx_time");
+        SELECT("is_sync");
         FROM("ali_income");
         applyWhere(example, false);
         
@@ -120,6 +125,10 @@ public class AliIncomeSqlProvider {
             SET("tx_time = #{record.txTime,jdbcType=TIMESTAMP}");
         }
         
+        if (record.getIsSync() != null) {
+            SET("is_sync = #{record.isSync,jdbcType=VARCHAR}");
+        }
+        
         applyWhere(example, true);
         return SQL();
     }
@@ -135,6 +144,7 @@ public class AliIncomeSqlProvider {
         SET("amount = #{record.amount,jdbcType=DECIMAL}");
         SET("category = #{record.category,jdbcType=VARCHAR}");
         SET("tx_time = #{record.txTime,jdbcType=TIMESTAMP}");
+        SET("is_sync = #{record.isSync,jdbcType=VARCHAR}");
         
         AliIncomeExample example = (AliIncomeExample) parameter.get("example");
         applyWhere(example, true);
@@ -167,6 +177,10 @@ public class AliIncomeSqlProvider {
         
         if (record.getTxTime() != null) {
             SET("tx_time = #{txTime,jdbcType=TIMESTAMP}");
+        }
+        
+        if (record.getIsSync() != null) {
+            SET("is_sync = #{isSync,jdbcType=VARCHAR}");
         }
         
         WHERE("id = #{id,jdbcType=VARCHAR}");

@@ -4,11 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import top.yms.mas.entity.MyExpend;
 import top.yms.mas.entity.MyExpendExample;
+import top.yms.mas.entity.odo.AllExpendDO;
 import top.yms.mas.entity.odo.LineExpendDO;
 import top.yms.mas.entity.odo.MonthExpendDO;
+import top.yms.mas.entity.odo.YearExpendDO;
 import top.yms.mas.mapper.MyExpendMapper;
 import top.yms.mas.utils.DateHelper;
 
@@ -69,5 +70,37 @@ public class ExpendService {
 
         return monthExpend;
     }
+
+
+    public YearExpendDO getYearExpend(String year) {
+        List<LineExpendDO> yearExpends = expendMapper.getYearExpend(year);
+
+        YearExpendDO yearExpendDO =new YearExpendDO();
+        BigDecimal totalExpend = new BigDecimal("0.0");
+        for(LineExpendDO exp : yearExpends) {
+            totalExpend = totalExpend.add(exp.getTotal());
+        }
+        yearExpendDO.setTotalExpend(totalExpend);
+        yearExpendDO.setLineExpends(yearExpends);
+
+        return yearExpendDO;
+    }
+
+    public AllExpendDO getAllExpend() {
+        List<LineExpendDO> allExpends = expendMapper.getAllExpend();
+
+        AllExpendDO allExpend = new AllExpendDO();
+        BigDecimal totalExpend = new BigDecimal("0.0");
+        for(LineExpendDO exp : allExpends) {
+            totalExpend = totalExpend.add(exp.getTotal());
+        }
+        allExpend.setTotalExpend(totalExpend);
+        allExpend.setLineExpends(allExpends);
+
+        return allExpend;
+
+    }
+
+
 
 }

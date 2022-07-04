@@ -44,13 +44,14 @@ public interface WxExpendMapper {
         @Result(column="payment_method", property="paymentMethod", jdbcType=JdbcType.VARCHAR),
         @Result(column="amount", property="amount", jdbcType=JdbcType.DECIMAL),
         @Result(column="category", property="category", jdbcType=JdbcType.VARCHAR),
-        @Result(column="tx_time", property="txTime", jdbcType=JdbcType.TIMESTAMP)
+        @Result(column="tx_time", property="txTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="is_sync", property="isSync", jdbcType=JdbcType.VARCHAR)
     })
     List<WxExpend> selectByExample(WxExpendExample example);
 
     @Select({
         "select",
-        "id, counterparty, title, payment_method, amount, category, tx_time",
+        "id, counterparty, title, payment_method, amount, category, tx_time, is_sync",
         "from wx_expend",
         "where id = #{id,jdbcType=VARCHAR}"
     })
@@ -61,7 +62,8 @@ public interface WxExpendMapper {
         @Result(column="payment_method", property="paymentMethod", jdbcType=JdbcType.VARCHAR),
         @Result(column="amount", property="amount", jdbcType=JdbcType.DECIMAL),
         @Result(column="category", property="category", jdbcType=JdbcType.VARCHAR),
-        @Result(column="tx_time", property="txTime", jdbcType=JdbcType.TIMESTAMP)
+        @Result(column="tx_time", property="txTime", jdbcType=JdbcType.TIMESTAMP),
+        @Result(column="is_sync", property="isSync", jdbcType=JdbcType.VARCHAR)
     })
     WxExpend selectByPrimaryKey(String id);
 
@@ -81,7 +83,8 @@ public interface WxExpendMapper {
           "payment_method = #{paymentMethod,jdbcType=VARCHAR},",
           "amount = #{amount,jdbcType=DECIMAL},",
           "category = #{category,jdbcType=VARCHAR},",
-          "tx_time = #{txTime,jdbcType=TIMESTAMP}",
+          "tx_time = #{txTime,jdbcType=TIMESTAMP},",
+          "is_sync = #{isSync,jdbcType=VARCHAR}",
         "where id = #{id,jdbcType=VARCHAR}"
     })
     int updateByPrimaryKey(WxExpend record);

@@ -19,6 +19,7 @@ import top.yms.mas.mapper.AliIncomeMapper;
 import top.yms.mas.utils.POIExcelUtil;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,6 +135,11 @@ public class AliRecordHandler extends AbstractRecordHandler{
     }
 
     @Override
+    public Charset getCharset() {
+        return Charset.forName("GBK");
+    }
+
+    @Override
     public RestOut doRecordHandler(MultipartFile file) {
         return super.doRecordHandler(file);
     }
@@ -214,7 +220,7 @@ public class AliRecordHandler extends AbstractRecordHandler{
         }
         logger.info("所有数据解析完毕...");
 
-        //mapPrint(incomeMap);
+        //mapPrint(expendMap);
         logger.info("开始写入到Db");
         writeExpend(expendMap);
         writeIncome(incomeMap);

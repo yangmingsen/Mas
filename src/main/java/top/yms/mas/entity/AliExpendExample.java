@@ -575,6 +575,76 @@ public class AliExpendExample {
             addCriterion("tx_time not between", value1, value2, "txTime");
             return (Criteria) this;
         }
+
+        public Criteria andIsSyncIsNull() {
+            addCriterion("is_sync is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncIsNotNull() {
+            addCriterion("is_sync is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncEqualTo(String value) {
+            addCriterion("is_sync =", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncNotEqualTo(String value) {
+            addCriterion("is_sync <>", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncGreaterThan(String value) {
+            addCriterion("is_sync >", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncGreaterThanOrEqualTo(String value) {
+            addCriterion("is_sync >=", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncLessThan(String value) {
+            addCriterion("is_sync <", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncLessThanOrEqualTo(String value) {
+            addCriterion("is_sync <=", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncLike(String value) {
+            addCriterion("is_sync like", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncNotLike(String value) {
+            addCriterion("is_sync not like", value, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncIn(List<String> values) {
+            addCriterion("is_sync in", values, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncNotIn(List<String> values) {
+            addCriterion("is_sync not in", values, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncBetween(String value1, String value2) {
+            addCriterion("is_sync between", value1, value2, "isSync");
+            return (Criteria) this;
+        }
+
+        public Criteria andIsSyncNotBetween(String value1, String value2) {
+            addCriterion("is_sync not between", value1, value2, "isSync");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

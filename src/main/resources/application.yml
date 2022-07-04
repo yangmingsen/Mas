@@ -6,7 +6,8 @@ server:
 spring:
   application:
     name: mas
-
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     username: root
     password: ymsyms
@@ -27,7 +28,6 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-
   servlet:
     multipart:
       max-file-size: 10MB
@@ -39,7 +39,7 @@ logging:
   level:
     top:
       yms:
-        mas: info
+        mas: debug
 
 
 debug: false
